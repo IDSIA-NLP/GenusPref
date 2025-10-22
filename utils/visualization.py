@@ -3,64 +3,114 @@ import pandas as pd
 from configs import name_models, GENERA
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.cm as cm
+
+# Global color mapping for consistent genus colors across plots
+GENUS_COLOR_MAP: dict[str, tuple] = {}
 
 
-def plot_genus_fidelity_distribution(
-    genus_distributions: dict[str, dict[str, float]],
-    model_name: str,
-    GENUS_COLORS : dict[str, tuple]
-) -> None:
+# Configure color palette for genus visualization
+COLORMAP = cm.get_cmap("Set3")
+COLORS_LIST = [COLORMAP(i) for i in range(COLORMAP.N)]
+
+
+
+def assign_genus_color(genus: str) -> tuple:
     """
-    Plot stacked bar chart showing distribution of answers by genus.
+    Assign a consistent color to a genus for visualization.
+
+    Uses global GENUS_COLOR_MAP to ensure consistency across plots.
 
     Args:
-        genus_distributions (dict): {input_genus: {output_genus: proportion}}
-        model_name (str): Identifier for the model (used in saved figure name).
+        genus: Name of the linguistic genus
+
+    Returns:
+        RGB color tuple
     """
-    fig, ax = plt.subplots(figsize=(10, 6))
-    all_observed_genera = set()
+    if genus not in GENUS_COLOR_MAP:
+        GENUS_COLOR_MAP[genus] = COLORS_LIST[len(GENUS_COLOR_MAP)]
+    return GENUS_COLOR_MAP[genus]
 
-    # Plot each genus as a stacked bar
-    for idx, input_genus in enumerate(GENERA):
-        output_distribution = genus_distributions.get(input_genus, {})
-        output_genera = list(output_distribution.keys())
-        proportions = list(output_distribution.values())
-        colors = [GENUS_COLORS.get(gen, "gray") for gen in output_genera]
 
-        # Track all represented genera
-        all_observed_genera.update(output_genera)
+def create_fidelity_plot(
+        proportions: dict[str, dict[str, float]],
+        genera: list[str],
+        model_name: str,
+        output_filename: str
+) -> None:
+    """
+    Create and save a stacked bar chart of language fidelity by genus.
 
+    Args:
+        proportions: Distribution of output genera for each input genus
+        genera: Ordered list of genera for x-axis
+        model_name: Display name of the model
+        output_filename: Path for saving the figure
+    """
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Track all genera that appear in the plot for legend
+    all_genera_present = set()
+
+    # Create stacked bars for each input genus
+    for i, genus_input in enumerate(genera):
+        distribution = proportions[genus_input]
+
+        labels = []
+        sizes = []
+        colors = []
+
+        for genus_output, proportion in distribution.items():
+            all_genera_present.add(genus_output)
+            labels.append(genus_output)
+            sizes.append(proportion)
+            colors.append(assign_genus_color(genus_output))
+
+        # Create stacked bar with cumulative bottoms
+        bottoms = np.cumsum([0] + sizes[:-1])
         ax.bar(
-            [idx],
-            proportions,
+            [i],
+            sizes,
             color=colors,
             edgecolor="white",
             width=0.5,
-            bottom=np.cumsum([0] + proportions[:-1]),
+            bottom=bottoms,
         )
 
-    # Axis formatting
-    ax.set_ylabel("Proportion of answers")
-    ax.set_xticks(range(len(GENERA)))
-    ax.set_xticklabels(GENERA, rotation=45, ha="right")
+    # Configure axes and labels
+    ax.set_ylabel("Proportion of answers", fontsize=11)
+    ax.set_xlabel("Input Language Genus", fontsize=11)
+    ax.set_xticks(range(len(genera)))
+    ax.set_xticklabels(genera, rotation=45, ha="right")
     ax.set_ylim(0, 1)
-    ax.grid(True, color="lightgray", linestyle="--", linewidth=0.5)
+
+    # Add grid for readability
+    ax.grid(True, color="lightgray", linestyle="--", linewidth=0.5, alpha=0.7)
     ax.set_facecolor("white")
 
-    # Legend
+    # Create legend for all genera in plot
     legend_handles = [
-        plt.Rectangle((0, 0), 1, 1, color=GENUS_COLORS[g])
-        for g in all_observed_genera
+        plt.Rectangle((0, 0), 1, 1, color=GENUS_COLOR_MAP[genus])
+        for genus in sorted(all_genera_present)
     ]
     ax.legend(
         legend_handles,
-        list(all_observed_genera),
+        sorted(all_genera_present),
         bbox_to_anchor=(1.05, 1),
         loc="upper left",
+        fontsize=9
+    )
+
+    # Add title
+    ax.set_title(
+        f"Language Fidelity Distribution: {model_name}",
+        fontsize=12,
+        pad=15
     )
 
     # Save figure
-    output_path = f"fidelity_distribution_by_genus_{name_models[model_name]}.png"
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.savefig(output_filename, dpi=300, bbox_inches="tight")
     plt.close()
+
+    print(f"Saved plot: {output_filename}")

@@ -1,37 +1,59 @@
-from random import shuffle
+from configs import maps_wals2genus, maps_iso2wals
+import pandas as pd
+from utils.other_data import supp_dic_iso_to_genus
 
 
-def map_iso_to_genus(iso_codes: list[str], maps_iso2wals : dict[str, str], maps_wals2genus : dict[str, str], COLOR_LIST, GENUS_COLORS : dict[str, tuple]) -> dict[str, str]:
+def map_iso_to_genus(iso_code: str) -> str:
     """
-    Map ISO-639-3 language codes to their linguistic genus using WALS mappings.
+    Map an ISO 639-3 language code to its linguistic genus.
 
     Args:
-        iso_codes (list[str]): List of ISO language codes.
+        iso_code: ISO 639-3 language code
+        use_wals: Whether to use WALS classification (default: True)
 
     Returns:
-        dict[str, str]: Dictionary mapping ISO → genus.
+        Genus name according to WALS classification
     """
-    iso_to_genus = {}
-    for iso in iso_codes:
-        if iso in maps_iso2wals:
-            wals_code = maps_iso2wals[iso]
-            if isinstance(wals_code, str):
-                genus = maps_wals2genus.get(wals_code)
-                if genus:
-                    iso_to_genus[iso] = genus
-
-    assign_genus_colors(iso_to_genus, COLOR_LIST, GENUS_COLORS)
-    return iso_to_genus
+    if iso_code in maps_iso2wals:
+        wals_code = maps_iso2wals[iso_code]
+        # Handle both single codes and lists of codes
+        if isinstance(wals_code, str):
+            return maps_wals2genus[wals_code]
+        else:
+            return maps_wals2genus[wals_code[0]]
+    else:
+        return supp_dic_iso_to_genus[iso_code]
 
 
-def assign_genus_colors(genus_dict: dict[str, str], COLOR_LIST, GENUS_COLORS) -> None:
+def build_genus_mapping(iso_codes: list[str]) -> dict[str, str]:
     """
-    Assign a unique color to each genus for consistent plotting.
+    Build a mapping dictionary from ISO codes to genera for a list of languages.
 
     Args:
-        genus_dict (dict[str, str]): Mapping of ISO → genus.
+        iso_codes: List of ISO 639-3 language codes
+
+    Returns:
+        Dictionary mapping ISO codes to genus names
     """
-    all_genera = sorted(set(genus_dict.values()))
-    shuffle(COLOR_LIST)
-    for i, genus in enumerate(all_genera):
-        GENUS_COLORS[genus] = COLOR_LIST[i % len(COLOR_LIST)]
+    return {iso_code: map_iso_to_genus(iso_code) for iso_code in iso_codes}
+
+
+def build_output_genus_mapping(df: pd.DataFrame) -> dict[str, str]:
+    """
+    Build genus mapping for detected output languages in the dataset.
+
+    Excludes certain problematic language codes (e.g., 'rop', 'nzi').
+
+    Args:
+        df: DataFrame containing 'detected_language' column
+
+    Returns:
+        Dictionary mapping output ISO codes to genus names
+    """
+    output_languages = list(df["detected_language"].unique())
+    genus_map = {}
+
+    for iso_code in output_languages:
+        genus_map[iso_code] = map_iso_to_genus(iso_code)
+
+    return genus_map

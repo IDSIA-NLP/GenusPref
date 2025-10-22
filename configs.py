@@ -13,8 +13,8 @@ GENERA = [
 ]
 
 
-maps_wals2genus: dict[str, str] = load("../multiQ/data/maps/mapping_wals_genus.joblib")
-maps_iso2wals: dict[str, str] = load("../multiQ/data/maps/iso_to_wals.joblib")
+maps_wals2genus: dict[str, str] = load("data/maps/mapping_wals_genus.joblib")
+maps_iso2wals: dict[str, str] = load("data/maps/iso_to_wals.joblib")
 
 
 list_models = [
@@ -24,7 +24,7 @@ list_models = [
     "Mistral-7B-Instruct-v0.1",
     "Mixtral-8x7B-Instruct-v0.1",
     "Qwen1.5-7B-Chat",
-    "apertus-lm-7b",
+    "Apertus-8B",
 ]
 
 

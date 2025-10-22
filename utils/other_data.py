@@ -222,7 +222,7 @@ supp_dic_iso_to_genus = {
     "tlh" : "Unknown",
     "tnr" : "Unknown",
     "kpe" : "Western Mande",
-"quf" : "Quechuan",
+    "quf" : "Quechuan",
     "vid" : "Bantu",
     "rop" : "Creoles and Pidgins",
     "nzi" : "Tano",
@@ -277,5 +277,4 @@ supp_dic_iso_to_genus = {
     'fue' : "Unknown",
     'bnj' : "Greater Central Philippine",
     'kus' : "Oti-Volta",
-
 }

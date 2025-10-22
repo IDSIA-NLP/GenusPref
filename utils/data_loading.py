@@ -1,19 +1,19 @@
 import pandas as pd
 
 
-def load_multiq_data(path : str) -> tuple[pd.DataFrame, list[str]]:
+def load_multiq_data(model_name: str) -> tuple[pd.DataFrame, list[str]]:
     """
-    Load fidelity data for MultiQ for a given multilingual model.
+    Load language fidelity data for a specific model.
 
     Args:
-        model_name (str): Name of the model (must match CSV filename).
+        model_name: Name/identifier of the language model
 
     Returns:
-        tuple:
-            - DataFrame containing fidelity information.
-            - List of ISO-639-3 codes for all unique languages.
+        Tuple containing:
+            - DataFrame with multiQ language fidelity data
+            - List of unique ISO 639-3 input language codes
     """
-
-    df = pd.read_csv(path)
-    language_iso_codes = df["iso_639_3"].unique().tolist()
-    return df, language_iso_codes
+    data_path : str = f"data/multiQ/language_fidelity/{model_name}.csv"
+    df : pd.DataFrame = pd.read_csv(data_path)
+    input_languages : list[str] = list(df["iso_639_3"].unique())
+    return df, input_languages
