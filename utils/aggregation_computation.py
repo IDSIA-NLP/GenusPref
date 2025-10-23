@@ -116,3 +116,24 @@ def extract_self_fidelity(
         self_fidelity[genus_source].append(fidelity_score)
 
     return self_fidelity
+
+
+
+
+
+def merge_dataframes(df_switch, df_fidelity):
+    """Merge switch and fidelity dataframes on id_lg."""
+    df_fidelity["id_lg"] = df_fidelity["id"].astype(str).str.cat(
+        df_fidelity["language"].astype(str), sep=";"
+    )
+    df_switch["id_lg"] = df_switch["id"].astype(str).str.cat(
+        df_switch["language"].astype(str), sep=";"
+    )
+
+    df_eval = df_fidelity.merge(
+        df_switch[["id_lg", "eval_completion", "prompt", "prompt_en"]],
+        on="id_lg",
+        how="left"
+    )
+
+    return df_eval

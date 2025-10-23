@@ -1,9 +1,9 @@
-
 import pandas as pd
-from configs import name_models, GENERA
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.cm as cm
+import seaborn as sns
+import os
 
 # Global color mapping for consistent genus colors across plots
 GENUS_COLOR_MAP: dict[str, tuple] = {}
@@ -114,3 +114,38 @@ def create_fidelity_plot(
     plt.close()
 
     print(f"Saved plot: {output_filename}")
+
+
+
+
+
+def create_heatmap(result_genus, model_name, threshold):
+    """Create and save a heatmap visualization."""
+    df = pd.DataFrame(result_genus).T
+
+    fig, ax = plt.subplots(figsize=(20, 15))
+    sns.heatmap(
+        df, annot=False, cmap="coolwarm", cbar=True, square=True, vmin=0, vmax=1, ax=ax
+    )
+
+    ax.set_xlabel("Target Genus", fontsize=25)
+    ax.set_ylabel("Source Genus", fontsize=25)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right", fontsize=25)
+    ax.set_yticklabels(
+        ax.get_yticklabels(),
+        rotation=-45,
+        ha="right",
+        va="center",
+        fontsize=25,
+        rotation_mode="anchor",
+    )
+
+    plt.subplots_adjust(left=0.30)
+    plt.tight_layout()
+
+    output_dir = f"results/{model_name}"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    plt.savefig(f"{output_dir}/genus_th_{threshold}.png", dpi=300, bbox_inches="tight")
+    plt.close()

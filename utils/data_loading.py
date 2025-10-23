@@ -17,3 +17,17 @@ def load_multiq_data(model_name: str) -> tuple[pd.DataFrame, list[str]]:
     df : pd.DataFrame = pd.read_csv(data_path)
     input_languages : list[str] = list(df["iso_639_3"].unique())
     return df, input_languages
+
+
+
+
+
+def load_data(model_name):
+    """Load switch and fidelity dataframes for a given model."""
+    path_switch = f"data/multiQ/{model_name}.csv"
+    path_fidelity = "data/multiQ/language_fidelity/Llama-2-13b-chat-hf.csv"
+
+    df_switch = pd.read_csv(path_switch)
+    df_fidelity = pd.read_csv(path_fidelity)
+
+    return df_switch, df_fidelity

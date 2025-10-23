@@ -19,3 +19,17 @@ def compare_with_language(source_lg: str, answers: dict[str, dict[str, bool]], l
     return result_language, result_language_prop
 
 
+
+
+
+def get_language_comparisons(list_lg_ab_thresh, results):
+    """Compare results across languages."""
+    result_language = {}
+    result_language_prop = {}
+
+    for language in list_lg_ab_thresh:
+        r_lg, r_lg_prop = compare_with_language(language, results, list_lg_ab_thresh)
+        result_language[language] = r_lg
+        result_language_prop[language] = r_lg_prop
+
+    return result_language, result_language_prop

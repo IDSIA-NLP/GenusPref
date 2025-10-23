@@ -12,6 +12,7 @@ GENERA = [
     "Chinese",
 ]
 
+THRESHOLD = 20
 
 maps_wals2genus: dict[str, str] = load("data/maps/mapping_wals_genus.joblib")
 maps_iso2wals: dict[str, str] = load("data/maps/iso_to_wals.joblib")

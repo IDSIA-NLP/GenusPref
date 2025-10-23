@@ -2,11 +2,15 @@
 
 
 This repository contains supplementary code for analyzing language fidelity patterns in multilingual language models, as presented in our LREC paper.
-Overview
 
-This script analyzes how well language models maintain language consistency when processing multilingual inputs. Languages are grouped by their linguistic genus according to the World Atlas of Language Structures (WALS) classification, allowing us to identify cross-linguistic patterns in model behavior.
+## Overview
 
-The analysis produces stacked bar charts showing, for each input language genus, the distribution of detected output language genera across the model's responses
+This project analyzes how well language models maintain language consistency when processing multilingual inputs. Languages are grouped by their linguistic genus according to the World Atlas of Language Structures (WALS) classification, allowing us to identify cross-linguistic patterns in model behavior.
+
+The analysis consists of two main components:
+
+1. **Language Fidelity Analysis** - Analyzes how well models detect and maintain language identity across multilingual inputs
+2. **Cross-Linguistic Transfer Analysis** - Examines whether correct answers in one language genus predict correct answers in another genus (cross-linguistic transfer patterns)
 
 
 ## Citation
@@ -18,14 +22,13 @@ If you use this code, please cite our paper:
 
 ### Dependencies
 
-```bash
-pip install pandas numpy matplotlib
-```
 
 **Required packages:**
-- `pandas` (≥1.3.0) - Data manipulation and analysis
-- `numpy` (≥1.20.0) - Numerical computing
-- `matplotlib` (≥3.4.0) - Visualization
+- `pandas` (≥1.3.0) 
+- `numpy` (≥1.20.0)
+- `matplotlib` (≥3.4.0)
+- `seaborn` (≥0.11.0)
+- `joblib` (≥1.0.0)
 
 ## Data 
 
@@ -42,30 +45,18 @@ data/
 
 
 
-### Input Data
-
-
-
-Each CSV file should contain at least the following columns:
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `iso_639_3` | str | ISO 639-3 code of the input language |
-| `detected_language` | str | ISO 639-3 code of the detected/output language |
-
-
 ## Usage
 
-### Basic Usage
+### Component 1: Cross-Linguistic Transfer Analysis
 
 Run the script from the command line:
 
 ```bash
-python language_fidelity_analysis.py
+python fidelity.py
 ```
 
 
-### Output
+**Output:**
 
 The script generates plots :
 
@@ -73,11 +64,25 @@ The script generates plots :
 fidelity_distribution_by_genus_{MODEL_NAME}.png
 ```
 
+**Parameters:**
+```python
+THRESHOLD = 20  # Minimum number of correct answers required per language
+```
+
+
 Each plot shows:
 - **X-axis:** Input language genera (from `configs.GENERA`)
 - **Y-axis:** Proportion of model responses (0-1)
 - **Stacked bars:** Distribution of detected output language genera
 - **Legend:** All genera that appear in the data
+
+### Component 2: Language Fidelity Analysis (Original)
+
+
+```bash
+python switch.py
+```
+
 
 ## Configuration
 

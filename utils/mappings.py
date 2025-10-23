@@ -57,3 +57,33 @@ def build_output_genus_mapping(df: pd.DataFrame) -> dict[str, str]:
         genus_map[iso_code] = map_iso_to_genus(iso_code)
 
     return genus_map
+
+
+
+def get_output_genus(lg_output, maps_iso2wals, maps_wals2genus):
+    """Determine output genus for a given language."""
+    if lg_output in maps_iso2wals:
+        wals_lg_output = maps_iso2wals[lg_output]
+        if isinstance(wals_lg_output, str):
+            output_genus = maps_wals2genus[wals_lg_output]
+        elif maps_wals2genus[wals_lg_output[0]] == maps_wals2genus[wals_lg_output[1]]:
+            output_genus = maps_wals2genus[wals_lg_output[0]]
+    else:
+        output_genus = supp_dic_iso_to_genus[lg_output]
+
+    return output_genus
+
+
+def get_input_genus(lg_input, maps_iso2wals, maps_wals2genus):
+    """Determine input genus for a given language."""
+    if lg_input in maps_iso2wals:
+        wals_lg_input = maps_iso2wals[lg_input]
+        if isinstance(wals_lg_input, str) and wals_lg_input in maps_wals2genus:
+            input_genus = maps_wals2genus[wals_lg_input]
+        elif isinstance(wals_lg_input, (list, tuple)):
+            if maps_wals2genus[wals_lg_input[0]] == maps_wals2genus[wals_lg_input[1]]:
+                input_genus = maps_wals2genus[wals_lg_input[0]]
+    else:
+        input_genus = supp_dic_iso_to_genus[lg_input]
+
+    return input_genus

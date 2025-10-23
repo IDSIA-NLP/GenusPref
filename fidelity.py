@@ -7,7 +7,7 @@ maps ISO-639-3 codes to linguistic genera, aggregates model predictions,
 and produces genus-level stacked bar charts.
 
 Usage:
-    python language_fidelity_analysis.py
+    python fidelity.py
 
 Output:
     Generates PNG files with fidelity distribution plots for each model.
