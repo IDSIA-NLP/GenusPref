@@ -17,7 +17,15 @@ The analysis consists of two main components:
 If you use this code, please cite our paper:
 
 ```bibtex
-[To ADD]
+@misc{mitrović2025llmscapablemaintaininglanguage,
+      title={Are the LLMs Capable of Maintaining at Least the Language Genus?}, 
+      author={Sandra Mitrović and David Kletz and Ljiljana Dolamic and Fabio Rinaldi},
+      year={2025},
+      eprint={2510.21561},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2510.21561}, 
+}
 ```
 
 ### Dependencies
