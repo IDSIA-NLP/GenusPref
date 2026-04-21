@@ -60,28 +60,16 @@ data/
 
 ### Component 1: Cross-Linguistic Transfer Analysis
 
-Run the script from the command line:
+Run the notbook:
 
 ```bash
-python fidelity.py
+python fidelity.ipynb
 ```
 
 
 **Output:**
 
-The script generates plots :
-
-```
-fidelity_distribution_by_genus_{MODEL_NAME}.png
-```
-
-**Parameters:**
-```python
-THRESHOLD = 20  # Minimum number of correct answers required per language
-```
-
-
-Each plot shows:
+The script generates plots. Each plot shows:
 - **X-axis:** Input language genera (from `configs.GENERA`)
 - **Y-axis:** Proportion of model responses (0-1)
 - **Stacked bars:** Distribution of detected output language genera
@@ -91,26 +79,9 @@ Each plot shows:
 
 
 ```bash
-python switch.py
+python switch.ipynb
 ```
 
-
-## Configuration
-
-### Adjusting Parameters
-
-You can modify the following parameters at the top of the script:
-
-```python
-# Set random seed for reproducible color assignment
-RANDOM_SEED = 1
-
-# Threshold for grouping rare genera into "Other" category
-OTHER_THRESHOLD = 0.05  # 5% of total occurrences
-
-# Color palette for visualization
-COLORMAP = cm.get_cmap("Set3")
-```
 
 ## License
 
